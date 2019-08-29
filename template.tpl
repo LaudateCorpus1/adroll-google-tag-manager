@@ -440,32 +440,26 @@ ___WEB_PERMISSIONS___
 
 ___SANDBOXED_JS_FOR_WEB_TEMPLATE___
 
-// Enter your template code here.
-const query = require('queryPermission');
-const log = require('logToConsole');
-const injectScript = require('injectScript');
-const setInWindow = require('setInWindow');
 const copyFromWindow = require('copyFromWindow');
+const injectScript = require('injectScript');
+const log = require('logToConsole');
+const makeTableMap = require('makeTableMap');
+const setInWindow = require('setInWindow');
 
-//log('data =', data);
-
-setInWindow('adroll_adv_id', data.customerId, true);   
-setInWindow('adroll_pix_id', data.pixelId, true);   
+setInWindow('adroll_adv_id', data.customerId, true);
+setInWindow('adroll_pix_id', data.pixelId, true);
 setInWindow('adroll_conversion_value', data.conversionValueInDollars, true);
 setInWindow('adroll_currency', data.conversionValueCurrency || "USD", true);
 setInWindow('adroll_segments', data.segmentName, true);
 
-var adroll_custom_data = copyFromWindow('adroll_custom_data');
+let adroll_custom_data = copyFromWindow('adroll_custom_data');
 if (typeof adroll_custom_data !== 'object') {
   adroll_custom_data = {};
 }
 
-if (data.customData) {
-  for (var n=0;n<data.customData.length;n++) {
-    if (data.customData[n].cdKey) {
-      adroll_custom_data[data.customData[n].cdKey] = data.customData[n].cdValue;
-    }
-  }
+const customDataMap = makeTableMap(data.customData || [], 'cdKey', 'cdValue');
+for (let key in customDataMap) {
+  adroll_custom_data[key] = customDataMap[key];
 }
 
 adroll_custom_data.order_id = data.orderId;
@@ -473,15 +467,11 @@ adroll_custom_data.product_id = data.productId;
 adroll_custom_data.product_group = data.productGroup;
 setInWindow('adroll_custom_data', adroll_custom_data, true);
 
-if (query('access_globals', 'write', '__adroll_loaded')) {
-  setInWindow('__adroll_loaded', true, true);   
-}
+setInWindow('__adroll_loaded', true, true);
 
-//follow this pattern
-const url = 'https://s.adroll.com/j/roundtrip.js';
-if (query('inject_script', url)) {
-  injectScript(url, data.gtmOnSuccess, data.gtmOnFailure);
-}
+injectScript(
+    'https://s.adroll.com/j/roundtrip.js',
+    data.gtmOnSuccess, data.gtmOnFailure);
 
 
 ___NOTES___
