@@ -2,7 +2,7 @@
 
 {
   "displayName": "AdRoll Group Pixel",
-  "description": "Implement the AdRoll Group Pixel for AdRoll and RollWorks customers.",
+  "description": "An AdRoll Group Pixel tag helps advertisers to use their site data in conjunction with the AdRoll and RollWorks platforms. Visit adrollgroup.com to learn more.",
   "securityGroups": [],
   "id": "cvt_temp_public_id",
   "type": "TAG",
@@ -24,26 +24,26 @@ ___TEMPLATE_PARAMETERS___
   {
     "displayName": "Advertisable EID",
     "simpleValueType": true,
-    "name": "advertisableEid",
+    "name": "customerId",
     "type": "TEXT"
   },
   {
     "displayName": "Pixel EID",
     "simpleValueType": true,
-    "name": "pixelEid",
+    "name": "pixelId",
     "type": "TEXT"
   },
   {
     "displayName": "Conversion Value",
     "simpleValueType": true,
-    "name": "conversionValue",
+    "name": "conversionValueInDollars",
     "type": "TEXT"
   },
   {
     "displayName": "Conversion Value Currency",
     "defaultValue": "USD",
     "simpleValueType": true,
-    "name": "conversionCurrency",
+    "name": "conversionValueCurrency",
     "type": "TEXT"
   },
   {
@@ -87,7 +87,7 @@ ___TEMPLATE_PARAMETERS___
   {
     "displayName": "Segment Name",
     "simpleValueType": true,
-    "name": "segmentId",
+    "name": "segmentName",
     "type": "TEXT"
   }
 ]
@@ -449,11 +449,11 @@ const copyFromWindow = require('copyFromWindow');
 
 //log('data =', data);
 
-setInWindow('adroll_adv_id', data.advertisableEid, true);   
-setInWindow('adroll_pix_id', data.pixelEid, true);   
-setInWindow('adroll_conversion_value', data.conversionValue, true);
-setInWindow('adroll_currency', data.conversionCurrency, true);
-setInWindow('adroll_segments', data.segmentId, true);
+setInWindow('adroll_adv_id', data.customerId, true);   
+setInWindow('adroll_pix_id', data.pixelId, true);   
+setInWindow('adroll_conversion_value', data.conversionValueInDollars, true);
+setInWindow('adroll_currency', data.conversionValueCurrency || "USD", true);
+setInWindow('adroll_segments', data.segmentName, true);
 
 var adroll_custom_data = copyFromWindow('adroll_custom_data');
 if (typeof adroll_custom_data !== 'object') {
@@ -486,4 +486,4 @@ if (query('inject_script', url)) {
 
 ___NOTES___
 
-Created on 8/19/2019, 3:42:12 PM
+Created on 8/29/2019, 2:53:13 PM
